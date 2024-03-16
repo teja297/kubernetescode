@@ -7,25 +7,22 @@ node {
         checkout scm
     }
 
-    stage('Build image') {
-  
-       app = docker.build("teja297/test")
-    }
+        stage("Build Dokcer Image") {
+        script{
+             sh "docker build -t teja297/teja-app:5 ."
 
-    stage('Test image') {
-  
-
-        app.inside {
-            sh 'echo "Tests passed"'
         }
     }
 
-    stage('Push image') {
-        
-        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-            app.push("${env.BUILD_NUMBER}")
+
+      stage("dockerlogin push") {
+        script{
+             sh "docker login -u teja297 -p Teja@7566"
+             sh "docker push teja297/teja-app:5"
+
         }
     }
+
     
     stage('Trigger ManifestUpdate') {
                 echo "triggering updatemanifestjob"
